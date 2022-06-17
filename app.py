@@ -158,32 +158,28 @@ def tobs():
 
 @app.route("/api/v1.0/<start>")
 @app.route("/api/v1.0/<start>/<end>")
+# = 'now'
 def start(start, end = 'now'):
     session = Session(engine)
     
     
-    most_active = engine.execute("SELECT station, COUNT(station) \
-                                FROM measurement \
-                                GROUP BY station\
-                                ORDER BY COUNT(station) DESC\
-                                ").fetchall()
-
-    most_active_id = most_active[0][0]
-
+    
     if end == 'now':
-        lowest  = engine.execute(f"SELECT MIN(tobs) FROM measurement WHERE date >= {start}").fetchall()[0][0]
-        highest = engine.execute(f"SELECT MAX(tobs) FROM measurement WHERE date >= {start}").fetchall()[0][0]
-        average = engine.execute(f"SELECT AVG(tobs) FROM measurement WHERE date >= {start}").fetchall()[0][0]
+        lowest  = engine.execute(f"SELECT MIN(tobs) FROM measurement WHERE date >= '{start}'").fetchall()[0][0]
+        highest = engine.execute(f"SELECT MAX(tobs) FROM measurement WHERE date >= '{start}'").fetchall()[0][0]
+        average = engine.execute(f"SELECT AVG(tobs) FROM measurement WHERE date >= '{start}'").fetchall()[0][0]
     else:
-        lowest  = engine.execute(f"SELECT MIN(tobs) FROM measurement WHERE date >= {start} AND date <= {end}").fetchall()[0][0]
-        highest = engine.execute(f"SELECT MAX(tobs) FROM measurement WHERE date >= {start} AND date <= {end}").fetchall()[0][0]
-        average = engine.execute(f"SELECT AVG(tobs) FROM measurement WHERE date >= {start} AND date <= {end}").fetchall()[0][0]
+        lowest  = engine.execute(f"SELECT MIN(tobs) FROM measurement WHERE date >= '{start}' AND date <= '{end}'").fetchall()[0][0]
+        highest = engine.execute(f"SELECT MAX(tobs) FROM measurement WHERE date >= '{start}' AND date <= '{end}'").fetchall()[0][0]
+        average = engine.execute(f"SELECT AVG(tobs) FROM measurement WHERE date >= '{start}' AND date <= '{end}'").fetchall()[0][0]
     
     return {
         'TMIN': lowest,
         'TMAX': highest,
         'TAVG': round(average,2)
     }
+
+    
 
 
 if __name__ == '__main__':
